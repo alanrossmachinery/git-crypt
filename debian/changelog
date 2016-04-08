@@ -1,3 +1,19 @@
+git-crypt (0.5.0-1~1.gbp214e2f) UNRELEASED; urgency=medium
+
+  ** SNAPSHOT build @214e2febf9e0e3c91a4ac585b5a3829a5d10aad6 **
+
+  [ Andrew Ayer ]
+  * Remove gnuism from Makefile
+  * Mark .gpg files in .git-crypt as binary
+  * Don't hard code path to git-crypt in .git/config on Linux
+
+  [ Aaron Heimlich ]
+  * More flexible gpg invocation. git-crypt will now use the value of the "gpg.program" git configuration setting. If "gpg.program" is not set, then it will fall back to the previous behavior of using "gpg".
+
+  [ Andrew Ayer ]
+
+ -- Andrew Ayer <agwa@andrewayer.name>  Fri, 08 Apr 2016 00:49:39 -0500
+
 git-crypt (0.5.0-1) unstable; urgency=medium
 
   * Initial release. (Closes: #785346)

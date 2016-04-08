@@ -32,6 +32,25 @@
 #include "util.hpp"
 #include <sstream>
 
+static std::string gpg_get_executable()
+{
+	std::vector<std::string>	command;
+	std::string		executable = "gpg";
+
+	command.push_back("git");
+	command.push_back("config");
+	command.push_back("--get");
+	command.push_back("--path");
+	command.push_back("gpg.program");
+	std::stringstream		command_output;
+	if (successful_exit(exec_command(command, command_output))) {
+		executable = command_output.str();
+		executable = executable.erase(executable.find_last_not_of(" \f\n\r\t\v") + 1);
+	}
+
+	return executable;
+}
+
 static std::string gpg_nth_column (const std::string& line, unsigned int col)
 {
 	std::string::size_type	pos = 0;
@@ -62,7 +81,8 @@ std::string gpg_get_uid (const std::string& fingerprint)
 {
 	// gpg --batch --with-colons --fixed-list-mode --list-keys 0x7A399B2DB06D039020CD1CE1D0F3702D61489532
 	std::vector<std::string>	command;
-	command.push_back("gpg");
+	std::string		gpg = gpg_get_executable();
+	command.push_back(gpg);
 	command.push_back("--batch");
 	command.push_back("--with-colons");
 	command.push_back("--fixed-list-mode");
@@ -94,7 +114,8 @@ std::vector<std::string> gpg_lookup_key (const std::string& query)
 
 	// gpg --batch --with-colons --fingerprint --list-keys jsmith@example.com
 	std::vector<std::string>	command;
-	command.push_back("gpg");
+	std::string		gpg = gpg_get_executable();
+	command.push_back(gpg);
 	command.push_back("--batch");
 	command.push_back("--with-colons");
 	command.push_back("--fingerprint");
@@ -125,7 +146,8 @@ std::vector<std::string> gpg_list_secret_keys ()
 {
 	// gpg --batch --with-colons --list-secret-keys --fingerprint
 	std::vector<std::string>	command;
-	command.push_back("gpg");
+	std::string		gpg = gpg_get_executable();
+	command.push_back(gpg);
 	command.push_back("--batch");
 	command.push_back("--with-colons");
 	command.push_back("--list-secret-keys");
@@ -154,7 +176,8 @@ void gpg_encrypt_to_file (const std::string& filename, const std::string& recipi
 {
 	// gpg --batch -o FILENAME -r RECIPIENT -e
 	std::vector<std::string>	command;
-	command.push_back("gpg");
+	std::string		gpg = gpg_get_executable();
+	command.push_back(gpg);
 	command.push_back("--batch");
 	if (key_is_trusted) {
 		command.push_back("--trust-model");
@@ -174,7 +197,8 @@ void gpg_decrypt_from_file (const std::string& filename, std::ostream& output)
 {
 	// gpg -q -d FILENAME
 	std::vector<std::string>	command;
-	command.push_back("gpg");
+	std::string		gpg = gpg_get_executable();
+	command.push_back(gpg);
 	command.push_back("-q");
 	command.push_back("-d");
 	command.push_back(filename);
